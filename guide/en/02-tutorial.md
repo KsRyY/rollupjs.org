@@ -1,33 +1,33 @@
 ---
-title: Tutorial
+title: 教程
 ---
 
-### Creating your first bundle
+### 创建第一个bundle
 
-*Before we begin, you'll need to have [Node.js](https://nodejs.org) installed so that you can use [npm](https://npmjs.com). You'll also need to know how to access the [command line](https://www.codecademy.com/learn/learn-the-command-line) on your machine.*
+*开始前, 需要安装 [Node.js](https://nodejs.org)， 这样才可以使用 [npm](https://npmjs.com) ；还需要了解如何使用 [command line](https://www.codecademy.com/learn/learn-the-command-line)。*
 
-The easiest way to use Rollup is via the Command Line Interface (or CLI). For now, we'll install it globally (later on we'll learn how to install it locally to your project so that your build process is portable, but don't worry about that yet). Type this into the command line:
+使用 Rollup 最简单的方法是通过 Command Line Interface （或 CLI）。先全局安装 Rollup （之后会介绍如何在项目中进行安装，更便于打包，但现在不用担心这个问题）。在命令行中输入以下内容：
 
 ```bash
 npm install rollup --global # or `npm i rollup -g` for short
 ```
 
-You can now run the `rollup` command. Try it!
+现在可以运行 `rollup` 命令了。试试吧~
 
 ```bash
 rollup
 ```
 
-Because no arguments were passed, Rollup prints usage instructions. This is the same as running `rollup --help`, or `rollup -h`.
+由于没有传递参数，所以 Rollup 打印出了使用说明。这和运行 `rollup --help` 或 `rollup -h` 的效果一样。
 
-Let's create a simple project:
+我们来创建一个简单的项目：
 
 ```bash
 mkdir -p my-rollup-project/src
 cd my-rollup-project
 ```
 
-First, we need an *entry point*. Paste this into a new file called `src/main.js`:
+首先，我们需要个 *入口*。将以下代码粘贴到新建的文件 `src/main.js` 中：
 
 ```js
 // src/main.js
@@ -37,20 +37,20 @@ export default function () {
 }
 ```
 
-Then, let's create the `foo.js` module that our entry point imports:
+之后创建入口文件引用的 `foo.js` 模块：
 
 ```js
 // src/foo.js
 export default 'hello world!';
 ```
 
-Now we're ready to create a bundle:
+现在可以创建 bundle 了：
 
 ```bash
 rollup src/main.js -f cjs
 ```
 
-The `-f` option (short for `--output.format`) specifies what kind of bundle we're creating — in this case, CommonJS (which will run in Node.js). Because we didn't specify an output file, it will be printed straight to `stdout`:
+`-f` 选项（`--output.format` 的缩写）指定了所创建 bundle 的类型——这里是 CommonJS（在 Node.js 中运行）。由于没有指定输出文件，所以会直接打印在 `stdout` 中：
 
 ```js
 'use strict';
@@ -64,15 +64,15 @@ var main = function () {
 module.exports = main;
 ```
 
-You can save the bundle as a file like so:
+也可以像下面一样将 bundle 保存为文件：
 
 ```bash
 rollup src/main.js -o bundle.js -f cjs
 ```
 
-(You could also do `rollup src/main.js -f cjs > bundle.js`, but as we'll see later, this is less flexible if you're generating sourcemaps.)
+（你也可以用 `rollup src/main.js -f cjs > bundle.js`，但是我们之后会提到，这种方法在生成 sourcemap 时灵活性不高。）
 
-Try running the code:
+试着运行下面的代码：
 
 ```bash
 node
@@ -81,15 +81,15 @@ node
 'hello world!'
 ```
 
-Congratulations! You've created your first bundle with Rollup.
+恭喜，你已经用 Rollup 完成了第一个 bundle。
 
-### Using config files
+### 使用配置文件
 
-So far, so good, but as we start adding more options it becomes a bit of a nuisance to type out the command.
+上面的方式还不错，但是如果添加更多的选项，这种命令行的方式就显得麻烦了。
 
-To save repeating ourselves, we can create a config file containing all the options we need. A config file is written in JavaScript and is more flexible than the raw CLI.
+为此，我们可以创建配置文件来囊括所需的选项。配置文件由 JavaScript 写成，比 CLI 更加灵活。
 
-Create a file in the project root called `rollup.config.js`, and add the following code:
+在项目中创建一个名为 `rollup.config.js` 的文件，增加如下代码：
 
 ```js
 // rollup.config.js
@@ -101,46 +101,46 @@ export default {
   }
 };
 ```
-
-To use the config file, we use the `--config` or `-c` flag:
+ 
+我们用 `--config` 或 `-c` 来使用配置文件：
 
 ```bash
 rm bundle.js # so we can check the command works!
 rollup -c
 ```
 
-You can override any of the options in the config file with the equivalent command line options:
+同样的命令行选项将会覆盖配置文件中的选项：
 
 ```bash
 rollup -c -o bundle-2.js # `-o` is short for `--output.file`
 ```
 
-(Note that Rollup itself processes the config file, which is why we're able to use `export default` syntax – the code isn't being transpiled with Babel or anything similar, so you can only use ES2015 features that are supported in the version of Node.js that you're running.)
+（注意 Rollup 本身会处理配置文件，所以可以使用 `export default` 语法——代码不会经过 Babel 等类似工具编译，所以只能使用所用 Node.js 版本支持的 ES2015 语法。）
 
-You can, if you like, specify a different config file from the default `rollup.config.js`:
+如果愿意的话，也可以指定与默认 `rollup.config.js` 文件不同的配置文件：
 
 ```bash
 rollup --config rollup.config.dev.js
 rollup --config rollup.config.prod.js
 ```
 
-### Using plugins
+### 使用插件
 
-So far, we've created a simple bundle from an entry point and a module imported via a relative path. As you build more complex bundles, you'll often need more flexibility – importing modules installed with npm, compiling code with Babel, working with JSON files and so on.
+目前为止，我们通过相对路径，将一个入口文件和一个模块创建成了一个简单的 bundle。随着构建更复杂的 bundle，通常需要更大的灵活性——引入 npm 安装的模块、通过 Babel 编译代码、和 JSON 文件打交道等。
 
-For that, we use *plugins*, which change the behaviour of Rollup at key points in the bundling process. A list of available plugins is maintained on [the Rollup wiki](https://github.com/rollup/rollup/wiki/Plugins).
+为此，我们可以用 *plugins* 在打包的关键过程中更改 Rollup 的行为。[the Rollup wiki](https://github.com/rollup/rollup/wiki/Plugins) 维护了可用的插件列表。
 
-For this tutorial, we'll use [rollup-plugin-json](https://github.com/rollup/rollup-plugin-json), which allows Rollup to import data from a JSON file.
+此教程中，我们将使用 [rollup-plugin-json](https://github.com/rollup/rollup-plugin-json)，令 Rollup 从 JSON 文件中读取数据。
 
-Install rollup-plugin-json as a development dependency:
+将 rollup-plugin-json 安装为开发依赖：
 
 ```bash
 npm install --save-dev rollup-plugin-json
 ```
 
-(We're using `--save-dev` rather than `--save` because our code doesn't actually depend on the plugin when it runs – only when we're building the bundle.)
+（我们用的是 `--save-dev` 而不是 `--save`，因为代码实际执行时不依赖这个插件——只是在打包时使用。）
 
-Update your `src/main.js` file so that it imports from your package.json instead of `src/foo.js`:
+更新 `src/main.js` 文件，从 package.json 而非 `src/foo.js` 中读取数据：
 
 ```js
 // src/main.js
@@ -151,7 +151,7 @@ export default function () {
 }
 ```
 
-Edit your `rollup.config.js` file to include the JSON plugin:
+编辑 `rollup.config.js` 文件，加入 JSON 插件：
 
 ```js
 // rollup.config.js
@@ -167,7 +167,7 @@ export default {
 };
 ```
 
-Run Rollup with `npm run build`. The result should look like this:
+`npm run build` 执行 Rollup。结果如下：
 
 ```js
 'use strict';
@@ -181,4 +181,4 @@ var main = function () {
 module.exports = main;
 ```
 
-(Notice that only the data we actually need gets imported – `name` and `devDependencies` and other parts of `package.json` are ignored. That's tree-shaking in action!)
+（注意只有我们实际需要的数据——`name` 和 `devDependencies` 被引入了，`package.json` 中的其它数据被忽略了。这是 tree-shaking 的原因。）
