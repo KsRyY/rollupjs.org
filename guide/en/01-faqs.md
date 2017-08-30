@@ -1,23 +1,23 @@
 ---
-title: Frequently asked questions
+title: 常见问题
 ---
 
-#### Why are ES modules better than CommonJS modules?
+#### 为什么ES模块比CommonJS更好?
 
-ES modules are an official standard and the clear path forward for JavaScript code structure, whereas CommonJS modules are an idiosyncratic legacy format that served as a stopgap solution before ES modules had been proposed. ES modules allow static analysis that enables optimizations like tree-shaking, and provide advanced features like circular references and live bindings.
+ES模块是官方标准，也是JavaScript语言明确的发展方向，而CommonJS模块是一种特殊的传统格式，在ES模块被提出之前做为暂时的解决方案。 ES模块允许进行静态分析，从而实现像 tree-shaking 的优化，并提供诸如循环引用和动态绑定等高级功能。
 
-#### What is "tree-shaking?"
+#### 什么是 ‘tree-shaking’?
 
-Tree-shaking, also known as "live code inclusion," is the process of eliminating code that is not actually used in a given project. It is [similar to dead code elimination](https://medium.com/@Rich_Harris/tree-shaking-versus-dead-code-elimination-d3765df85c80#.jnypozs9n) but can be much more efficient.
+Tree-shaking, 也被称为 "live code inclusion," 它是清除实际上并没有在给定项目中使用的代码的过程，但是它可以更加高效。词汇来源查看：[similar to dead code elimination](https://medium.com/@Rich_Harris/tree-shaking-versus-dead-code-elimination-d3765df85c80#.jnypozs9n) 
 
-#### How do I use Rollup in Node.js with CommonJS modules?
+#### 我如何在 CommonJS 模块中使用 Rollup ?
 
-Rollup strives to implement the specification for ES modules, not necessarily the behaviors of Node.js, npm, `require()`, and CommonJS. Consequently, loading of CommonJS modules and use of Node's module location resolution logic are both implemented as optional plugins, not included by default in the Rollup core. Just `npm install` the [CommonJS](https://github.com/rollup/rollup-plugin-commonjs) and [node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) plugins and then enable them using a `rollup.config.js` file and you should be all set.
+Rollup 力图实现 ES 模块的规范，而不一定是 Node.js, npm, `require()`, 和 CommonJS 的特性。 因此，加载 CommonJS 模块和使用 Node 模块位置解析逻辑都被实现为可选插件，默认情况下不在 Rollup 内核中。 你只需要执行 `npm install` 安装 [CommonJS](https://github.com/rollup/rollup-plugin-commonjs) 和 [node-resolve](https://github.com/rollup/rollup-plugin-node-resolve) 插件然后使用 `rollup.config.js` 配置文件启用他们，并且你需要全部设置。
 
-#### Is Rollup meant for building libraries or applications?
+#### Rollup 是用来构建库还是应用程序？
 
-Rollup is already used by many major JavaScript libraries, and can also be used to build the vast majority of applications. However, Rollup doesn't yet support a few specific advanced features that can sometimes be useful when building applications, most notably code splitting and [dynamic imports at runtime](https://github.com/tc39/proposal-dynamic-import). If your project needs either of those, you may be better off with [Webpack](https://webpack.js.org/).
+Rollup 已被许多主流的 JavaScript 库使用，也可用于构建绝大多数应用程序。但是 Rollup 还不支持一些特定的高级功能，尤其是用在构建一些应用程序的时候，特别是代码拆分和运行时态的动态导入 [dynamic imports at runtime](https://github.com/tc39/proposal-dynamic-import). 如果你的项目中更需要这些功能，那使用 [Webpack](https://webpack.js.org/)可能更符合你的需求。
 
-#### Who made the Rollup logo? It's lovely.
+#### 谁制作了 Rollup 的 Logo。太可爱了!
 
-[Julian Lloyd](https://twitter.com/jlmakes)!
+我就知道! 是[Julian Lloyd.](https://twitter.com/jlmakes)制作的。
