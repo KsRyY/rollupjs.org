@@ -4,7 +4,7 @@ title: Rollup 与其他工具集成
 
 ### npm packages
 
-在某些时候，你的项目很可能依赖于从npm安装到你的`node_modules`文件夹中的软件包。 与Webpack和Browserify这样的其他捆绑包不同，Rollup不知道“开箱即用”如何处理这些依赖关系 - 我们需要添加一些配置。
+在某些时候，你的项目很可能依赖于从npm安装到你的`node_modules`文件夹中的软件包。 与Webpack和Browserify这样的其他捆绑包不同，Rollup不知道如何打破常规去处理这些依赖。 - 我们需要添加一些配置。
 
 让我们添加一个简单的依赖 [the-answer](https://www.npmjs.com/package/the-answer)，它输出对生活、宇宙及其它一切的答案
 
@@ -68,22 +68,22 @@ export default {
 
 #### rollup-plugin-commonjs
 
-一些库导出成你可以正常导入的ES6模块 -`the-answer` 就是一个这样的模块。 但是目前，npm中的大多数包都是以CommonJS模块的形式出现的。 在它们更改之前，我们需要将CommonJS模块转换为 ES2015 供 Rollup 使用。
+一些库导出成你可以正常导入的ES6模块 -`the-answer` 就是一个这样的模块。 但是目前，npm中的大多数包都是以CommonJS模块的形式出现的。 在它们更改之前，我们需要将CommonJS模块转换为 ES2015 供 Rollup 处理。
 
-这个 [rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs) 插件就是如此.
+这个 [rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs) 插件就是用来将 CommonJS 转换成 ES2015 模块的。
 
 请注意，`rollup-plugin-commonjs`应该用在其他插件转换你的模块*之前* - 这是为了防止其他插件的改变破坏CommonJS的检测。
 
 ### Peer dependencies
 
-假设你正在构建一个具有对等依赖关系（peer dependency）的库，例如React或Lodash。 如果你如上所述设置外部程序（externals），你的 Rollup 将打包*所有*导入：
+假设你正在构建一个具有对等依赖关系（peer dependency）的库，例如React或Lodash。 如果你如上所述设置外部引用（externals），你的 Rollup 将把 所有 imports 的模块打包在一起：
 
 ```js
 import answer from 'the-answer';
 import _ from 'lodash';
 ```
 
-你可以微调哪些导入是想要打包的，哪些是外部的（externals）。 对于这个例子，我们认为`lodash`是外部的（externals），而不是`the-answer`。
+你可以微调哪些导入是想要打包的，哪些是外部的引用（externals）。 对于这个例子，我们认为`lodash`是外部的引用（externals），而不是`the-answer`。
 
 这是配置文件:
 
@@ -119,13 +119,13 @@ export default {
 }
 ```
 
-如果你使用 [babel-plugin-lodash]（https://github.com/lodash/babel-plugin-lodash）来选择lodash模块，在这种情况下，Babel将转换你的导入语句，如下所示
+如果你使用 [babel-plugin-lodash]（https://github.com/lodash/babel-plugin-lodash）来最优选择lodash模块，在这种情况下，Babel将转换你的导入语句，如下所示
 
 ```js
 import _merge from 'lodash/merge';
 ```
 
-“external”的数组形式不会处理通配符，所以这个导入只会在函数形式中被视为外部的（externals）。
+“external”的数组形式不会处理通配符，所以这个导入只会以函数的形式被视作外部依赖/引用（externals）。
 
 ### Babel
 
@@ -153,7 +153,7 @@ export default {
   plugins: [
     resolve(),
     babel({
-      exclude: 'node_modules/**' // 只有我们的源代码
+      exclude: 'node_modules/**' // 只编译我们的源代码
     })
   ]
 };
