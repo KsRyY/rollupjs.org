@@ -8,7 +8,7 @@ ES模块是官方标准，也是JavaScript语言明确的发展方向，而Commo
 
 #### 什么是 ‘tree-shaking’?
 
-Tree-shaking, 也被称为 "live code inclusion," 它是清除实际上并没有在给定项目中使用的代码的过程，但是它可以更加高效。词汇来源查看：[如同清除无用代码](https://medium.com/@Rich_Harris/tree-shaking-versus-dead-code-elimination-d3765df85c80#.jnypozs9n) 
+Tree-shaking, 也被称为 "live code inclusion," 它是清除实际上并没有在给定项目中使用的代码的过程，但是它可以更加高效。词汇来源查看：[与清除无用代码相似](https://medium.com/@Rich_Harris/tree-shaking-versus-dead-code-elimination-d3765df85c80#.jnypozs9n) 
 
 #### 我如何在 CommonJS 模块中使用 Rollup ?
 
