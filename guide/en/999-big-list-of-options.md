@@ -1,30 +1,30 @@
 ---
-title: Big list of options
+title: 大选项列表
 ---
 
 ### Core functionality
 
 #### input *`-i`/`--input`*
 
-`String` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`)
+`String` 这个包的入口点 (例如：你的 `main.js` 或者 `app.js` 或者 `index.js`)
 
 #### file *`-o`/`--output.file`*
 
-`String` The file to write to. Will also be used to generate sourcemaps, if applicable
+`String` 要写入的文件。也可用于生成 sourcemaps，如果适用
 
 #### format *`-f`/`--output.format`*
 
-`String` The format of the generated bundle. One of the following:
+`String` 生成包的格式。 下列之一:
 
-* `amd` – Asynchronous Module Definition, used with module loaders like RequireJS
-* `cjs` – CommonJS, suitable for Node and Browserify/Webpack
-* `es` – Keep the bundle as an ES module file
-* `iife` – A self-executing function, suitable for inclusion as a `<script>` tag. (If you want to create a bundle for your application, you probably want to use this, because it leads to smaller file sizes.)
-* `umd` – Universal Module Definition, works as `amd`, `cjs` and `iife` all in one
+* `amd` – 异步模块定义，用于像RequireJS这样的模块加载器
+* `cjs` – CommonJS，适用于 Node 和 Browserify/Webpack
+* `es` – 将软件包保存为ES模块文件
+* `iife` – 一个自动执行的功能，适合作为`<script>`标签。（如果要为应用程序创建一个捆绑包，您可能想要使用它，因为它会导致文件大小变小。）
+* `umd` – 通用模块定义，以`amd`，`cjs` 和 `iife` 为一体
 
 #### name *`-n`/`--name`*
 
-`String` The variable name, representing your `iife`/`umd` bundle, by which other scripts on the same page can access it.
+`String` 变量名，代表你的 `iife`/`umd` 包，同一页上的其他脚本可以访问它。
 
 ```js
 // rollup.config.js
@@ -42,7 +42,7 @@ export default {
 
 #### plugins
 
-`Array` of plugin objects (or a single plugin object) – see [Getting started with plugins](#getting-started-with-plugins) for more information. Remember to call the imported plugin function (i.e. `commonjs()`, not just `commonjs`).
+`Array` 的插件对象 (或一个插件对象) – 有关详细信息请参阅 [插件入门](#getting-started-with-plugins)。记住要调用导入的插件函数(即 `commonjs()`, 而不是 `commonjs`).
 
 ```js
 // rollup.config.js
@@ -60,10 +60,11 @@ export default {
 
 #### external *`-e`/`--external`*
 
-Either a `Function` that takes an `id` and returns `true` (external) or `false` (not external), or an `Array` of module IDs that should remain external to the bundle. The IDs should be either:
+两者任一 `Function` 需要一个 `id` 并返回 `true`（外部引用）或 `false`（不是外部的引用），
+或者 `Array` 应该保留在bundle的外部引用的模块ID。ID应该是：
 
-1. the name of an external dependency
-1. a resolved ID (like an absolute path to a file)
+1. 外部依赖的名称
+2. 一个已解决的ID（像文件的绝对路径）
 
 ```js
 // rollup.config.js
@@ -78,7 +79,7 @@ export default {
 };
 ```
 
-When given as a command line argument, it should be a comma-separated list of IDs:
+当作为命令行参数给出时，它应该是以逗号分隔的ID列表：
 
 ```bash
 rollup -i src/main.js ... -e foo,bar,baz
@@ -87,13 +88,13 @@ rollup -i src/main.js ... -e foo,bar,baz
 
 #### globals *`-g`/`--globals`*
 
-`Object` of `id: name` pairs, used for `umd`/`iife` bundles. For example, in a case like this...
+`Object` 形式的 `id: name` 对，用于`umd`/`iife`包。例如：在这样的情况下...
 
 ```js
 import $ from 'jquery';
 ```
 
-...we want to tell Rollup that the `jquery` module ID equates to the global `$` variable:
+...我们想告诉 Rollup `jquery` 模块的id等同于 `$` 变量:
 
 ```js
 // rollup.config.js
@@ -108,14 +109,14 @@ export default {
 
 /*
 var MyBundle = (function ($) {
-  // code goes here
+  // 代码到这里
 }(window.jQuery));
 */.
 ```
 
-Alternatively, supply a function that will turn an external module ID into a global.
+或者，提供将外部模块ID转换为全局的功能。
 
-When given as a command line argument, it should be a comma-separated list of `id:name` pairs:
+当作为命令行参数给出时，它应该是一个逗号分隔的“id：name”对列表：
 
 ```bash
 rollup -i src/main.js ... -g jquery:$,underscore:_
@@ -126,7 +127,7 @@ rollup -i src/main.js ... -g jquery:$,underscore:_
 
 #### paths
 
-`Function` that takes an ID and returns a path, or `Object` of `id: path` pairs. Where supplied, these paths will be used in the generated bundle instead of the module ID, allowing you to (for example) load dependencies from a CDN:
+`Function`，它获取一个ID并返回一个路径，或者`id：path`对的`Object`。在提供的位置，这些路径将被用于生成的包而不是模块ID，从而允许您（例如）从CDN加载依赖关系：
 
 ```js
 // app.js
@@ -158,7 +159,7 @@ define(['https://d3js.org/d3.v4.min'], function (d3) {
 
 #### banner/footer
 
-`String` A string to prepend/append to the bundle. (Note: `banner` and `footer` options will not break sourcemaps)
+`String` 字符串以 前置/追加 到捆绑包。(注意:“banner”和“footer”选项不会破坏sourcemaps)
 
 ```js
 // rollup.config.js
@@ -171,7 +172,7 @@ export default {
 
 #### intro/outro
 
-`String` Similar to `banner` and `footer`, except that the code goes *inside* any format-specific wrapper
+`String`类似于 `banner`和`footer`，除了代码在*内部*任何格式特定的包装器
 
 ```js
 export default {
@@ -182,33 +183,32 @@ export default {
 
 #### cache
 
-`Object` A previously-generated bundle. Use it to speed up subsequent builds — Rollup will only reanalyse the modules that have changed.
-
+`Object`以前生成的包。使用它来加速后续的构建——Rollup只会重新分析已经更改的模块。
 
 #### onwarn
 
-`Function` that will intercept warning messages. If not supplied, warnings will be deduplicated and printed to the console.
+`Function` 将拦截警告信息。如果没有提供，警告将被复制并打印到控制台。
 
-Warnings are objects with at minimum a `code` and a `message` property, meaning you can control how different kinds of warnings are handled:
+警告是至少有一个`code` 和 `message`属性的对象，这意味着您可以控制如何处理不同类型的警告：
 
 ```js
 onwarn (warning) {
-  // skip certain warnings
+  // 跳过某些警告
   if (warning.code === 'UNUSED_EXTERNAL_IMPORT') return;
 
-  // throw on others
+  // 抛出异常
   if (warning.code === 'NON_EXISTENT_EXPORT') throw new Error(warning.message);
 
-  // console.warn everything else
+  // 控制台打印一切警告
   console.warn(warning.message);
 }
 ```
 
-Many warnings also have a `loc` property and a `frame` allowing you to locate the source of the warning:
+许多警告也有一个`loc`属性和一个`frame`，你可以定位到警告的来源：
 
 ```js
 onwarn ({ loc, frame, message }) {
-  // print location if applicable
+  // 打印位置（如果适用）
   if (loc) {
     console.warn(`${loc.file} (${loc.line}:${loc.column}) ${message}`);
     if (frame) console.warn(frame);
@@ -220,66 +220,65 @@ onwarn ({ loc, frame, message }) {
 
 #### sourcemap *`-m`/`--sourcemap`*
 
-If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap will be appended to the resulting `output` file as a data URI.
+如果 `true`，将创建一个单独的sourcemap文件。如果 `inline`，sourcemap将作为数据URI附加到生成的`output`文件中。
 
 #### sourcemapFile
 
-`String` The location of the generated bundle. If this is an absolute path, all the `sources` paths in the sourcemap will be relative to it. The `map.file` property is the basename of `sourcemapFile`, as the location of the sourcemap is assumed to be adjacent to the bundle.
+`String`生成的包的位置。如果这是一个绝对路径，sourcemap中的所有源代码路径都将相对于它。 `map.file`属性是`sourcemapFile`的基本名称，因为sourcemap的位置被假定为与bundle相邻
 
-`sourcemapFile` is not required if `output` is specified, in which case an output filename will be inferred by adding ".map"  to the output filename for the bundle.
+如果指定`output`，`sourcemapFile`不是必需的，在这种情况下，将通过给bundle输出文件添加 “.map” 后缀来推断输出文件名。
 
 #### interop
 
-`Boolean` whether or not to add an 'interop block'. By default (`interop: true`), for safety's sake, Rollup will assign any external dependencies' `default` exports to a separate variable if it's necessary to distinguish between default and named exports. This generally only applies if your external dependencies were transpiled (for example with Babel) – if you're sure you don't need it, you can save a few bytes with `interop: false`.
-
+`Boolean` 是否添加'interop块'。默认情况下（`interop：true`），为了安全起见，如果需要区分默认和命名导出，则Rollup会将任何外部依赖项“default”导出到一个单独的变量。这通常只适用于您的外部依赖关系（例如与Babel）（如果您确定不需要它），则可以使用“interop：false”来节省几个字节。
 
 
 ### Danger zone
 
-You probably don't need to use these options unless you know what you're doing!
+你可能不需要使用这些选项，除非你知道你在做什么!
 
 #### treeshake
 
-Whether or not to apply tree-shaking. It's recommended that you omit this option (defaults to `treeshake: true`), unless you discover a bug caused by the tree-shaking algorithm in which case use `treeshake: false` once you've filed an issue!
+是否应用tree-shaking。建议您省略此选项（默认为`treeshake：true`），除非您发现由tree-shaking算法引起的bug，在这种情况下，请使用“treeshake：false”，一旦您提交了问题！
+
 
 #### acorn
 
-Any options that should be passed through to Acorn, such as `allowReserved: true`.
+任何应该传递给Acorn的选项，例如`allowReserved：true`。
 
 #### context
 
-By default, the context of a module – i.e., the value of `this` at the top level – is `undefined`. In rare cases you might need to change this to something else, like `'window'`.
+默认情况下，模块的上下文 - 即顶级的`this`的值为`undefined`。在极少数情况下，您可能需要将其更改为其他内容，如 `'window'`。
 
 #### moduleContext
 
-Same as `options.context`, but per-module – can either be an object of `id: context` pairs, or an `id => context` function.
+和`options.context`一样，但是每个模块可以是`id: context`对的对象，也可以是`id => context`函数。
 
 #### legacy
 
-Adds support for very old environments like IE8 by stripping out more modern code that might not work reliably, at the cost of deviating slightly from the precise specifications required of ES6 module environments.
-
+为了增加对诸如IE8之类的旧版环境的支持，通过剥离更多可能无法正常工作的现代化的代码，其代价是偏离ES6模块环境所需的精确规范。
 
 #### exports
 
-`String` What export mode to use. Defaults to `auto`, which guesses your intentions based on what the `entry` module exports:
+`String` 使用什么导出模式。默认为`auto`，它根据`entry`模块导出的内容猜测你的意图：
 
-* `default` – suitable if you're only exporting one thing using `export default ...`
-* `named` – suitable if you're exporting more than one thing
-* `none` – suitable if you're not exporting anything (e.g. you're building an app, not a library)
+* `default` – 如果你使用 `export default ...` 仅仅导出一个东西，那适合用这个
+* `named` – 如果你导出多个东西，适合用这个
+* `none` – 如果你不熟出任何内容 (例如，你正在构建应用程序，而不是库)，则适合用这个
 
-The difference between `default` and `named` affects how other people can consume your bundle. If you use `default`, a CommonJS user could do this, for example:
+`default` 和 `named`之间的区别会影响其他人如何使用捆绑包。如果您使用`default`，则CommonJS用户可以执行此操作，例如
 
 ```js
 var yourLib = require( 'your-lib' );
 ```
 
-With `named`, a user would do this instead:
+使用 `named`，用户可以这样做：
 
 ```js
 var yourMethod = require( 'your-lib' ).yourMethod;
 ```
 
-The wrinkle is that if you use `named` exports but *also* have a `default` export, a user would have to do something like this to use the default export:
+有点波折就是如果你使用`named`导出，但是*同时也*有一个`default`导出，用户必须这样做才能使用默认的导出：
 
 ```js
 var yourMethod = require( 'your-lib' ).yourMethod;
@@ -288,9 +287,9 @@ var yourLib = require( 'your-lib' )['default'];
 
 #### amd *`--amd.id` and `--amd.define`*
 
-`Object` Can contain the following properties:
+`Object` 可以包含以下属性：
 
-**amd.id** `String` An ID to use for AMD/UMD bundles:
+**amd.id** `String` 用于 AMD/UMD 软件包的ID：
 
 ```js
 // rollup.config.js
@@ -305,7 +304,7 @@ export default {
 // -> define('my-bundle', ['dependency'], ...
 ```
 
-**amd.define** `String` A function name to use instead of `define`:
+**amd.define** `String` 要使用的函数名称，而不是 `define`:
 
 ```js
 // rollup.config.js
@@ -322,7 +321,7 @@ export default {
 
 #### indent
 
-`String` the indent string to use, for formats that require code to be indented (`amd`, `iife`, `umd`). Can also be `false` (no indent), or `true` (the default – auto-indent)
+`String` 是要使用的缩进字符串，对于需要缩进代码的格式（`amd`，`iife`，`umd`）。也可以是`false`（无缩进）或`true`（默认 - 自动缩进）
 
 ```js
 // rollup.config.js
@@ -334,23 +333,22 @@ export default {
 
 #### strict
 
-`true` or `false` (defaults to `true`) – whether to include the 'use strict' pragma at the top of generated non-ES6 bundles. Strictly-speaking (geddit?), ES6 modules are *always* in strict mode, so you shouldn't disable this without good reason.
-
+`true`或`false`（默认为`true`） - 是否在生成的非ES6软件包的顶部包含'use strict'pragma。严格来说（geddit？），ES6模块*始终都是*严格模式，所以你应该没有很好的理由来禁用它。
 
 ### Watch options
 
-These options only take effect when running Rollup with the `--watch` flag, or using `rollup.watch`.
+这些选项仅在运行 Rollup 时使用 `--watch` 标志或使用 `rollup.watch` 时生效。
 
 #### watch.chokidar
 
-A `Boolean` indicating that [chokidar](https://github.com/paulmillr/chokidar) should be used instead of the built-in `fs.watch`, or an `Object` of options that are passed through to chokidar.
+`Boolean` 表示应该使用 [chokidar](https://github.com/paulmillr/chokidar) 而不是内置的 `fs.watch`，或者是一个传递给 chokidar 的选项对象。
 
-You must install chokidar separately if you wish to use it.
+如果你希望使用它，你必须单独安装chokidar。
 
 
 #### watch.include
 
-Limit the file-watching to certain files:
+限制文件监控某些文件：
 
 ```js
 // rollup.config.js
@@ -365,7 +363,7 @@ export default {
 
 #### watch.exclude
 
-Prevent files from being watched:
+防止文件被监控：
 
 ```js
 // rollup.config.js
