@@ -128,7 +128,7 @@ rollup --config rollup.config.prod.js
 
 目前为止，我们通过相对路径，将一个入口文件和一个模块创建成了一个简单的 bundle。随着构建更复杂的 bundle，通常需要更大的灵活性——引入 npm 安装的模块、通过 Babel 编译代码、和 JSON 文件打交道等。
 
-为此，我们可以用 *plugins* 在打包的关键过程中更改 Rollup 的行为。[the Rollup wiki](https://github.com/rollup/rollup/wiki/Plugins) 维护了可用的插件列表。
+为此，我们可以用 *插件(plugins)* 在打包的关键过程中更改 Rollup 的行为。[the Rollup wiki](https://github.com/rollup/rollup/wiki/Plugins) 维护了可用的插件列表。
 
 此教程中，我们将使用 [rollup-plugin-json](https://github.com/rollup/rollup-plugin-json)，令 Rollup 从 JSON 文件中读取数据。
 
@@ -181,4 +181,4 @@ var main = function () {
 module.exports = main;
 ```
 
-（注意只有我们实际需要的数据——`name` 和 `devDependencies` 被引入了，`package.json` 中的其它数据被忽略了。这是 tree-shaking 的原因。）
+（注意只有我们实际需要的数据——name 和 devDependencies 和 package.json 中的其它数据被忽略了。这是 tree-shaking 起了作用。）
