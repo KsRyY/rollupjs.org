@@ -71,8 +71,7 @@ $ rollup --config my.config.js
 
 ### 命令行的参数
 
-Many options have command line equivalents. Any arguments passed here will override the config file, if you're using one. See the [big list of options](#big-list-of-options) for details.
-配置文件中的许多选项和命令行的参数是等价的。如果你使用这里的参数，那么将重写配置文件中对应的参数。想了解更多的话，仔细查阅这个[包办大量选项的清单](#big-list-of-options)
+配置文件中的许多选项和命令行的参数是等价的。如果你使用这里的参数，那么将重写配置文件。想了解更多的话，仔细查阅这个[包办大量选项的清单](#big-list-of-options)
 
 ```bash
 -i, --input                 要打包的文件（必须）
@@ -87,10 +86,10 @@ Many options have command line equivalents. Any arguments passed here will overr
 --amd.define                使用Function来代替`define`
 --no-strict                 在生成的包中省略`"use strict";`
 --no-conflict               对于UMD模块来说，给全局变量生成一个无冲突的方法
---intro                     在打包好的文件的块的内部的最顶部插入一段内容
---outro                     在打包好的文件的块的内部的最底部插入一段内容
---banner                    在打包好的文件的块的外部的最顶部插入一段内容
---footer                    在打包好的文件的块的外部的最底部插入一段内容
+--intro                     在打包好的文件的块的内部(wrapper内部)的最顶部插入一段内容
+--outro                     在打包好的文件的块的内部(wrapper内部)的最底部插入一段内容
+--banner                    在打包好的文件的块的外部(wrapper外部)的最顶部插入一段内容
+--footer                    在打包好的文件的块的外部(wrapper外部)的最底部插入一段内容
 --interop                   包含公共的模块（这个选项是默认添加的）
 ```
 
