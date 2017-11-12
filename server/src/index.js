@@ -37,7 +37,7 @@ app.get( '/guide', ( req, res ) => {
 
 app.get( '/repl', ( req, res ) => {
 	servePage( res, {
-		title: 'rollup.js',
+		title: 'rollup.js中文',
 		lang: 'zh',
 		nav: Nav.render({ route: 'repl', lang: 'zh' }),
 		route: Repl.render() // TODO is there any point? just render an empty box instead?
@@ -59,7 +59,7 @@ function serveGuide ( req, res, lang ) {
 	const summary = require( `${root}/public/guide-summary/${lang}.json` );
 
 	servePage( res, {
-		title: 'rollup.js',
+		title: 'rollup.js中文',
 		lang,
 		nav: Nav.render({ route: 'guide', lang }),
 		route: Guide.render({
