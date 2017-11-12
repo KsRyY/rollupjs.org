@@ -10,7 +10,7 @@ const main = document.querySelector( 'main' );
 const nav = new Nav({
 	target: ( header.innerHTML = '', header ),
 	data: {
-		lang: 'en'
+		lang: 'zh'
 	}
 });
 
@@ -33,7 +33,7 @@ redirect( '/repl/', route => {
 
 const guide = {
 	enter ( route ) {
-		const lang = route.params.lang || 'en';
+		const lang = route.params.lang || 'zh';
 
 		nav.set({ route: 'guide', lang });
 		document.title = 'rollup.js • guide';
@@ -107,7 +107,7 @@ roadtrip
 			// language hasn't already been selected. TODO this would
 			// be easier if the REPL was internationalized as well
 			if ( !nav.get( 'summary' ) ) {
-				store.getJSON( `/guide-summary/en.json` ).then( summary => {
+				store.getJSON( `/guide-summary/zh.json` ).then( summary => {
 					if ( !nav.get( 'summary' ) ) nav.set({ summary });
 				});
 			}

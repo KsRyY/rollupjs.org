@@ -6,7 +6,7 @@ var selectionchange = (function (undefined) {
   var MAC = /^Mac/.test(navigator.platform);
   var MAC_MOVE_KEYS = [65, 66, 69, 70, 78, 80]; // A, B, E, F, P, N from support.apple.com/en-ie/HT201236
   var SELECT_ALL_MODIFIER = MAC ? 'metaKey' : 'ctrlKey';
-  var RANGE_PROPS = ['startContainer', 'startOffset', 'endContainer', 'endOffset'];
+  var RANGE_PROPS = ['startContainer', 'startOffset', '`en`dContainer', 'endOffset'];
   var HAS_OWN_SELECTION = {INPUT: 1, TEXTAREA: 1};
 
   var ranges;
