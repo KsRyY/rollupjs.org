@@ -2,6 +2,11 @@
   "name": "rollupjs.org",
   "author": "Rich Harris",
   "version": "0.1.0",
+  "repository" :{
+    "type" : "git",
+    "url" : "https://github.com/rollup/rollupjs.org"
+  },
+  "license": "MIT",
   "devDependencies": {
     "clean-css": "^4.1.7",
     "console-group": "^0.3.3",
