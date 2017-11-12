@@ -87,7 +87,9 @@ export default [
 					// content
 					glob.sync( 'examples/**/*.json', { cwd: 'public' }).map( x => `/${x}` ),
 					glob.sync( 'fontello/**/*.*', { cwd: 'public' }).map( x => `/${x}` ),
-					glob.sync( 'images/**/*.*', { cwd: 'public' }).map( x => `/${x}` )
+					glob.sync( 'images/**/*.*', { cwd: 'public' }).map( x => `/${x}` ),
+					glob.sync( 'guide/*.json', { cwd: 'public' }).map( x => `/${x}` ),
+					glob.sync( 'guide-summary/*.json', { cwd: 'public' }).map( x => `/${x}` )
 				))
 			}),
 			buble(),
