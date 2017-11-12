@@ -1,5 +1,5 @@
 module.exports = {
-	cache: true,
+	cache: false,
 	beforeinstall: [],
 	afterinstall: [
 		'npm run build',
