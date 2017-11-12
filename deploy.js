@@ -3,7 +3,7 @@ module.exports = {
 	beforeinstall: [],
 	afterinstall: [
 		'npm run build',
-		'pm2 delete rollup',
 		'pm2 start deploy.json',
+		'pm2 restart rollup',
 	]
 };
