@@ -36,7 +36,7 @@ const guide = {
 		const lang = route.params.lang || 'zh';
 
 		nav.set({ route: 'guide', lang });
-		document.title = 'rollup.js • guide';
+		document.title = 'rollup.js中文';
 		document.documentElement.lang = lang;
 
 		// preload blog and guide
