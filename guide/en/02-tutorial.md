@@ -50,7 +50,7 @@ Now we're ready to create a bundle:
 rollup src/main.js -f cjs
 ```
 
-The `-f` option (short for `--output.format`) specifies what kind of bundle we're creating — in this case, CommonJS (which will run in Node.js). Because we didn't specify an output file, it will be printed straight to `stdout`:
+The `-f` option (short for `--format`) specifies what kind of bundle we're creating — in this case, CommonJS (which will run in Node.js). Because we didn't specify an output file, it will be printed straight to `stdout`:
 
 ```js
 'use strict';
@@ -112,7 +112,7 @@ rollup -c
 You can override any of the options in the config file with the equivalent command line options:
 
 ```bash
-rollup -c -o bundle-2.js # `-o` is short for `--output.file`
+rollup -c -o bundle-2.js # `-o` is equivalent to `--file` (formerly "output")
 ```
 
 (Note that Rollup itself processes the config file, which is why we're able to use `export default` syntax – the code isn't being transpiled with Babel or anything similar, so you can only use ES2015 features that are supported in the version of Node.js that you're running.)
@@ -131,6 +131,18 @@ So far, we've created a simple bundle from an entry point and a module imported 
 For that, we use *plugins*, which change the behaviour of Rollup at key points in the bundling process. A list of available plugins is maintained on [the Rollup wiki](https://github.com/rollup/rollup/wiki/Plugins).
 
 For this tutorial, we'll use [rollup-plugin-json](https://github.com/rollup/rollup-plugin-json), which allows Rollup to import data from a JSON file.
+
+Create a file in the project root called `package.json`, and add the following content:
+
+```json
+{
+  "name": "rollup-tutorial",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rollup -c"
+  }
+}
+```
 
 Install rollup-plugin-json as a development dependency:
 
@@ -182,3 +194,67 @@ module.exports = main;
 ```
 
 (Notice that only the data we actually need gets imported – `name` and `devDependencies` and other parts of `package.json` are ignored. That's tree-shaking in action!)
+
+### Experimental Code Splitting
+
+To use the new experimental code splitting feature, we add a second *entry point* called `src/main2.js` that itself dynamically loads main.js:
+
+```js
+// src/main2.js
+export default function () {
+  return import('./main.js').then(({ default: main }) => {
+    main();
+  });
+}
+```
+
+We can then pass both entry points to the rollup build, and instead of an output file we set a folder to output to with the `--dir` option (also passing the experimental flags):
+
+```bash
+rollup src/main.js src/main2.js -f cjs --dir dist --experimentalCodeSplitting --experimentalDynamicImport
+```
+
+Either built entry point can then be run in NodeJS without duplicating any code between the modules:
+
+```bash
+node -e "require('./dist/main2.js')()"
+```
+
+You can build the same code for the browser, for native ES modules, an AMD loader or SystemJS.
+
+For example, with `-f es` for native modules:
+
+```bash
+rollup src/main.js src/main2.js -f es --dir dist --experimentalCodeSplitting --experimentalDynamicImport
+```
+
+```html
+<!doctype html>
+<script type="module">
+  import main2 from './dist/main2.js';
+  main2();
+</script>
+```
+
+Or alternatively, for SystemJS with `-f system`:
+
+```bash
+rollup src/main.js src/main2.js -f system --dir dist --experimentalCodeSplitting --experimentalDynamicImport
+```
+
+install SystemJS via
+
+```bash
+npm install --save-dev systemjs
+```
+
+and then load either or both entry points in an HTML page as needed:
+
+```html
+<!doctype html>
+<script src="node_modules/systemjs/dist/system-production.js"></script>
+<script>
+  System.import('./dist/main2.js')
+  .then(({ default: main }) => main());
+</script>
+```

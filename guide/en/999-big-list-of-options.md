@@ -6,13 +6,18 @@ title: Big list of options
 
 #### input *`-i`/`--input`*
 
-`String` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`)
+`String`/ 
+`String[]` The bundle's entry point (e.g. your `main.js` or `app.js` or `index.js`). If you enable `experimentalCodeSplitting`, you can provide an array of entry points which will be bundled to separate chunks.
 
-#### file *`-o`/`--output.file`*
+#### output.file *`-o`/`--file`*
 
-`String` The file to write to. Will also be used to generate sourcemaps, if applicable
+`String` The file to write to. Will also be used to generate sourcemaps, if applicable. If `experimentalCodeSplitting` is enabled and `input` is an array, you must specify `dir` instead of `file`.
 
-#### format *`-f`/`--output.format`*
+#### output.dir * `--dir`*
+
+`String` The directory in which all generated chunks are placed. Only used if `experimentalCodeSplitting` is enabled and `input` is an array. In these cases this option replaces `file`.
+
+#### output.format *`-f`/`--format`*
 
 `String` The format of the generated bundle. One of the following:
 
@@ -21,8 +26,9 @@ title: Big list of options
 * `es` – Keep the bundle as an ES module file
 * `iife` – A self-executing function, suitable for inclusion as a `<script>` tag. (If you want to create a bundle for your application, you probably want to use this, because it leads to smaller file sizes.)
 * `umd` – Universal Module Definition, works as `amd`, `cjs` and `iife` all in one
+* `system` – Native format of the SystemJS loader
 
-#### name *`-n`/`--name`*
+#### output.name *`-n`/`--name`*
 
 `String` The variable name, representing your `iife`/`umd` bundle, by which other scripts on the same page can access it.
 
@@ -38,6 +44,18 @@ export default {
 };
 
 // -> var MyBundle = (function () {...
+```
+
+Namespaces are supported, so your name can contain dots. The resulting bundle will contain the setup necessary for the namespacing.
+
+```
+$ rollup -n "a.b.c"
+
+/* ->
+this.a = this.a || {};
+this.a.b = this.a.b || {};
+this.a.b.c = ...
+*/
 ```
 
 #### plugins
@@ -61,9 +79,8 @@ export default {
 #### external *`-e`/`--external`*
 
 Either a `Function` that takes an `id` and returns `true` (external) or `false` (not external), or an `Array` of module IDs that should remain external to the bundle. The IDs should be either:
-
 1. the name of an external dependency
-1. a resolved ID (like an absolute path to a file)
+2. a resolved ID (like an absolute path to a file)
 
 ```js
 // rollup.config.js
@@ -84,8 +101,13 @@ When given as a command line argument, it should be a comma-separated list of ID
 rollup -i src/main.js ... -e foo,bar,baz
 ```
 
+When providing a function, it is actually called with three parameters `(id, parent, isResolved)` that can give you more fine-grained control:
+* `id` is the id of the module in question
+* `parent` is the id of the module doing the import
+* `isResolved` signals whether the `id` has been resolved by e.g. plugins
 
-#### globals *`-g`/`--globals`*
+
+#### output.globals *`-g`/`--globals`*
 
 `Object` of `id: name` pairs, used for `umd`/`iife` bundles. For example, in a case like this...
 
@@ -99,10 +121,12 @@ import $ from 'jquery';
 // rollup.config.js
 export default {
   ...,
-  format: 'iife',
-  moduleName: 'MyBundle',
-  globals: {
-    jquery: '$'
+  output: {
+    format: 'iife',
+    name: 'MyBundle',
+    globals: {
+      jquery: '$'
+    }
   }
 };
 
@@ -110,7 +134,7 @@ export default {
 var MyBundle = (function ($) {
   // code goes here
 }(window.jQuery));
-*/.
+*/
 ```
 
 Alternatively, supply a function that will turn an external module ID into a global.
@@ -124,7 +148,7 @@ rollup -i src/main.js ... -g jquery:$,underscore:_
 
 ### Advanced functionality
 
-#### paths
+#### output.paths
 
 `Function` that takes an ID and returns a path, or `Object` of `id: path` pairs. Where supplied, these paths will be used in the generated bundle instead of the module ID, allowing you to (for example) load dependencies from a CDN:
 
@@ -156,27 +180,33 @@ define(['https://d3js.org/d3.v4.min'], function (d3) {
 });
 ```
 
-#### banner/footer
+#### output.banner/output.footer *`-banner`/`--footer`*
 
-`String` A string to prepend/append to the bundle. (Note: `banner` and `footer` options will not break sourcemaps)
+`String` A string to prepend/append to the bundle. You can also supply a `Promise` that resolves to a `String` to generate it asynchronously (Note: `banner` and `footer` options will not break sourcemaps)
 
 ```js
 // rollup.config.js
 export default {
   ...,
-  banner: '/* my-library version ' + version + ' */',
-  footer: '/* follow me on Twitter! @rich_harris */'
+  output: {
+    ...,
+    banner: '/* my-library version ' + version + ' */',
+    footer: '/* follow me on Twitter! @rich_harris */'
+  }
 };
 ```
 
-#### intro/outro
+#### output.intro/output.outro *`--intro`/`--outro`*
 
-`String` Similar to `banner` and `footer`, except that the code goes *inside* any format-specific wrapper
+`String` Similar to `banner` and `footer`, except that the code goes *inside* any format-specific wrapper. As with `banner` and `footer`, you can also supply a `Promise` that resolves to a `String`.
 
 ```js
 export default {
   ...,
-  intro: 'var ENVIRONMENT = "production";'
+  output: {
+    ...,
+    intro: 'var ENVIRONMENT = "production";'
+  }
 };
 ```
 
@@ -218,48 +248,108 @@ onwarn ({ loc, frame, message }) {
 }
 ```
 
-#### sourcemap *`-m`/`--sourcemap`*
+#### output.sourcemap *`-m`/`--sourcemap`*
 
 If `true`, a separate sourcemap file will be created. If `inline`, the sourcemap will be appended to the resulting `output` file as a data URI.
 
-#### sourcemapFile
+#### output.sourcemapFile *`--sourcemapFile`*
 
 `String` The location of the generated bundle. If this is an absolute path, all the `sources` paths in the sourcemap will be relative to it. The `map.file` property is the basename of `sourcemapFile`, as the location of the sourcemap is assumed to be adjacent to the bundle.
 
 `sourcemapFile` is not required if `output` is specified, in which case an output filename will be inferred by adding ".map"  to the output filename for the bundle.
 
-#### interop
+#### output.interop *`--interop`/*`--no-interop`*
 
-`Boolean` whether or not to add an 'interop block'. By default (`interop: true`), for safety's sake, Rollup will assign any external dependencies' `default` exports to a separate variable if it's necessary to distinguish between default and named exports. This generally only applies if your external dependencies were transpiled (for example with Babel) – if you're sure you don't need it, you can save a few bytes with `interop: false`.
+`true` or `false` (defaults to `true`) – whether or not to add an 'interop block'. By default (`interop: true`), for safety's sake, Rollup will assign any external dependencies' `default` exports to a separate variable if it's necessary to distinguish between default and named exports. This generally only applies if your external dependencies were transpiled (for example with Babel) – if you're sure you don't need it, you can save a few bytes with `interop: false`.
 
+#### output.extend *`--extend`/*`--no-extend`*
 
+`true` or `false` (defaults to `false`) – whether or not to extend the global variable defined by the `name` option in `umd` or `iife` formats. When `true`, the global variable will be defined as `(global.name = global.name || {})`. When false, the global defined by `name` will be overwritten like `(global.name = {})`.
+
+#### perf *`--perf`*
+
+`true` or `false` (defaults to `false`) – whether to collect performance timings. When used from the command line or a configuration file, detailed measurements about the current bundling process will be displayed. When used from the JavaScript API, the returned bundle object will contain an aditional `getTimings()` function that can be called at any time to retrieve all accumulated measurements.
 
 ### Danger zone
 
 You probably don't need to use these options unless you know what you're doing!
 
-#### treeshake
+#### treeshake *`--treeshake`/`--no-treeshake`*
 
-Whether or not to apply tree-shaking. It's recommended that you omit this option (defaults to `treeshake: true`), unless you discover a bug caused by the tree-shaking algorithm in which case use `treeshake: false` once you've filed an issue!
+Can be `true`, `false` or an object (see below), defaults to `true`. Whether or not to apply tree-shaking and to fine-tune the tree-shaking process. Setting this option to `false` will produce bigger bundles but may improve build performance. If you discover a bug caused by the tree-shaking algorithm, please file an issue!
+Setting this option to an object implies tree-shaking is enabled and grants the following additional options:
+
+**treeshake.pureExternalModules** `true`/`false` (default: `false`). If `true`, assume external dependencies from which nothing is imported do not have other side-effects like mutating global variables or logging.
+
+```javascript
+// input file
+import {unused} from 'external-a';
+import 'external-b';
+console.log(42);
+```
+
+```javascript
+// output with treeshake.pureExternalModules === false
+import 'external-a';
+import 'external-b';
+console.log(42);
+```
+
+```javascript
+// output with treeshake.pureExternalModules === true
+console.log(42);
+```
+
+**treeshake.propertyReadSideEffects** `true`/`false` (default: `true`). If `false`, assume reading a property of an object never has side-effects. Depending on your code, disabling this option can significantly reduce bundle size but can potentially break functionality if you rely on getters or errors from illegal property access.
+
+```javascript
+// Will be removed if treeshake.propertyReadSideEffects === false
+const foo = {
+  get bar() {
+    console.log('effect');
+    return 'bar';
+  }
+}
+const result = foo.bar;
+const illegalAccess = foo.quux.tooDeep;
+```
 
 #### acorn
 
-Any options that should be passed through to Acorn, such as `allowReserved: true`.
+Any options that should be passed through to Acorn, such as `allowReserved: true`. Cf. the [Acorn documentation](https://github.com/acornjs/acorn/blob/master/README.md#main-parser) for more available options.
 
-#### context
+#### acornInjectPlugins
 
-By default, the context of a module – i.e., the value of `this` at the top level – is `undefined`. In rare cases you might need to change this to something else, like `'window'`.
+An array of plugins to be injected into Acorn. In order to use a plugin, you need to pass its inject function here and enable it via the `acorn.plugins` option. For instance, to use async iteration, you can specify
+```javascript
+import acornAsyncIteration from 'acorn-async-iteration/inject';
+
+export default {
+    // … other options …
+    acorn: {
+        plugins: { asyncIteration: true }
+    },
+    acornInjectPlugins: [
+        acornAsyncIteration
+    ]
+};
+```
+
+in your rollup configuration.
+
+#### context *`--context`*
+
+`String` By default, the context of a module – i.e., the value of `this` at the top level – is `undefined`. In rare cases you might need to change this to something else, like `'window'`.
 
 #### moduleContext
 
 Same as `options.context`, but per-module – can either be an object of `id: context` pairs, or an `id => context` function.
 
-#### legacy
+#### output.legacy *`-l`/`--legacy`*
 
-Adds support for very old environments like IE8 by stripping out more modern code that might not work reliably, at the cost of deviating slightly from the precise specifications required of ES6 module environments.
+`true` or `false` (defaults to `false`) – adds support for very old environments like IE8 by stripping out more modern code that might not work reliably, at the cost of deviating slightly from the precise specifications required of ES6 module environments.
 
-
-#### exports
+#### output.exports *`--exports`*
 
 `String` What export mode to use. Defaults to `auto`, which guesses your intentions based on what the `entry` module exports:
 
@@ -286,7 +376,7 @@ var yourMethod = require( 'your-lib' ).yourMethod;
 var yourLib = require( 'your-lib' )['default'];
 ```
 
-#### amd *`--amd.id` and `--amd.define`*
+#### output.amd *`--amd.id` and `--amd.define`*
 
 `Object` Can contain the following properties:
 
@@ -320,7 +410,7 @@ export default {
 // -> def(['dependency'],...
 ```
 
-#### indent
+#### output.indent *`--indent`/`--no-indent`*
 
 `String` the indent string to use, for formats that require code to be indented (`amd`, `iife`, `umd`). Can also be `false` (no indent), or `true` (the default – auto-indent)
 
@@ -328,14 +418,50 @@ export default {
 // rollup.config.js
 export default {
   ...,
-  indent: false
+  output: {
+    ...,
+    indent: false
+  }
 };
 ```
 
-#### strict
+#### output.strict *`--strict`/*`--no-strict`*
 
 `true` or `false` (defaults to `true`) – whether to include the 'use strict' pragma at the top of generated non-ES6 bundles. Strictly-speaking (geddit?), ES6 modules are *always* in strict mode, so you shouldn't disable this without good reason.
 
+#### output.freeze *`--freeze`/`--no-freeze`*
+
+`true` or `false` (defaults to `true`) – wether to `Object.freeze()` namespace import objects (i.e. `import * as namespaceImportObject from...`) that are accessed dynamically.
+
+#### output.namespaceToStringTag *`--namespaceToStringTag`/*`--no-namespaceToStringTag`*
+
+`true` or `false` (defaults to `false`) – whether to add spec compliant `.toString()` tags to namespace objects. If this option is set,
+
+```javascript
+import * as namespace from './file.js';
+console.log(String(namespace));
+```
+
+will always log `[object Module]`;
+
+### Experimental options
+
+These options reflect new features that have not yet been fully finalized. Specific behaviour and usage may therefore be subject to change.
+
+#### experimentalDynamicImport *`--experimentalDynamicImport`*
+`true` or `false` (defaults to `false`) – adds the necessary acorn plugin to enable parsing dynamic imports, e.g.
+```javascript
+import('./my-module.js').then(moduleNamespace => console.log(moduleNamespace.foo));
+```
+When used without `experimentalCodeSplitting`, statically resolvable dynamic imports will be automatically inlined into your bundle. Also enables the `resolveDynamicImport` plugin hook.
+
+#### experimentalCodeSplitting *`--experimentalCodeSplitting`*
+`true` or `false` (defaults to `false`) – enables you to specify multiple entry points. If this option is enabled, `input` can be set to an array of entry points to be built into the folder at the provided `output.dir`.
+* Filenames of generated chunks in the `output.dir` folder correspond to the entry point filenames.
+* Shared chunks are generated automatically to avoid code duplication between chunks.
+* Enable the `experimentalDynamicImport` flag to generate new chunks for dynamic imports as well.
+
+`output.dir` and input as an array must both be provided for code splitting to work, the `output.file` option is not compatible with code splitting workflows.
 
 ### Watch options
 
@@ -346,7 +472,6 @@ These options only take effect when running Rollup with the `--watch` flag, or u
 A `Boolean` indicating that [chokidar](https://github.com/paulmillr/chokidar) should be used instead of the built-in `fs.watch`, or an `Object` of options that are passed through to chokidar.
 
 You must install chokidar separately if you wish to use it.
-
 
 #### watch.include
 
@@ -362,7 +487,6 @@ export default {
 };
 ```
 
-
 #### watch.exclude
 
 Prevent files from being watched:
@@ -376,3 +500,7 @@ export default {
   }
 };
 ```
+
+#### watch.clearScreen
+
+`true` or `false` (defaults to `true`) – whether to clear the screen when a rebuild is triggered.

@@ -167,10 +167,8 @@ Before Babel will actually compile your code, it needs to be configured. Create 
 ```js
 {
   "presets": [
-    ["latest", {
-      "es2015": {
-        "modules": false
-      }
+    ["env", {
+      "modules": false
     }]
   ],
   "plugins": ["external-helpers"]
@@ -183,10 +181,10 @@ Secondly, we're using the `external-helpers` plugin, which allows Rollup to incl
 
 Thirdly, we're putting our `.babelrc` file in `src`, rather than the project root. This allows us to have a different `.babelrc` for things like tests, if we need that later – it's generally a good idea to have separate configuration for separate tasks.
 
-Now, before we run rollup, we need to install the `latest` preset and the `external-helpers` plugin:
+Now, before we run rollup, we need to install the [`env`](https://babeljs.io/docs/plugins/preset-env/) preset and the `external-helpers` plugin:
 
 ```bash
-npm i -D babel-preset-latest babel-plugin-external-helpers
+npm i -D babel-preset-env babel-plugin-external-helpers
 ```
 
 Running Rollup now will create a bundle... except we're not actually using any ES2015 features. Let's change that. Edit `src/main.js`:
@@ -219,6 +217,30 @@ module.exports = main;
 Rollup returns promises which are understood by gulp so integration is easy.
 
 The syntax is very similar to the configuration file, but the properties are split across two different operations, corresponding to the [JavaScript API](#JavaScript-API):
+
+```js
+const gulp = require('gulp');
+const rollup = require('rollup');
+const rollupTypescript = require('rollup-plugin-typescript');
+
+gulp.task('build', () => {
+  return rollup.rollup({
+    input: './src/main.ts',
+    plugins: [
+      rollupTypescript()
+    ]
+  }).then(bundle => {
+    return bundle.write({
+      file: './dist/library.js',
+      format: 'umd',
+      name: 'library',
+      sourcemap: true
+    });
+  });
+});
+```
+
+Also you may use new async/await syntax
 
 ```js
 const gulp = require('gulp');
