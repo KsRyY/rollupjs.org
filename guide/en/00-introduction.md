@@ -41,6 +41,8 @@ $ rollup main.js --o bundle.js -f umd --name "myBundle"
 
 如果你将项目拆分成小的单独文件中，这样开发软件通常会很简单，因为这通常会消除无法预知的相互影响(remove unexpected interaction)，以及显著降低了所要解决的问题的复杂度(complexity of the problem)，并且可以在项目最初时，就简洁地编写小的项目（[不一定是标准答案](https://medium.com/@Rich_Harris/small-modules-it-s-not-quite-that-simple-3ca532d65de4)）。不幸的是，JavaScript 以往并没有将此功能作为语言的核心功能。
 
+This finally changed with the ES6 revision of JavaScript, which includes a syntax for importing and exporting functions and data so they can be shared between separate scripts. The specification is now fixed, but it is not yet implemented in browsers or Node.js. Rollup allows you to write your code using the new module system, and will then compile it back down to existing supported formats such as CommonJS modules, AMD modules, and IIFE-style scripts. This means that you get to *write future-proof code*, and you also get the tremendous benefits of...
+
 ### Tree-shaking
 
 除了使用 ES6 模块之外，Rollup 还静态分析代码中的 import，并将排除任何未实际使用的代码。这允许您架构于现有工具和模块之上，而不会增加额外的依赖或使项目的大小膨胀。
@@ -49,7 +51,7 @@ $ rollup main.js --o bundle.js -f umd --name "myBundle"
 
 ```js
 // 使用 CommonJS 导入(import)完整的 utils 对象
-var utils = require( 'utils' );
+var utils = require( './utils' );
 var query = 'Rollup';
 // 使用 utils 对象的 ajax 方法
 utils.ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
@@ -59,7 +61,7 @@ utils.ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
 
 ```js
 // 使用 ES6 import 语句导入(import) ajax 函数
-import { ajax } from 'utils';
+import { ajax } from './utils';
 var query = 'Rollup';
 // 调用 ajax 函数
 ajax( 'https://api.example.com?search=' + query ).then( handleResponse );

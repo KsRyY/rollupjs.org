@@ -48,12 +48,18 @@ const inputOptions = {
   // 高级参数
   onwarn,
   cache,
+  perf,
 
   // 危险参数
   acorn,
+  acornInjectPlugins,
+  treeshake,
   context,
   moduleContext,
-  legacy
+
+  // 试验性
+  experimentalCodeSplitting,
+  experimentalDynamicImport
 };
 ```
 
@@ -65,8 +71,9 @@ const inputOptions = {
 ```js
 const outputOptions = {
   // 核心参数
-  file,   // 若有bundle.write，必填
   format, // 必填
+  file,
+  dir,
   name,
   globals,
 
@@ -79,12 +86,16 @@ const outputOptions = {
   sourcemap,
   sourcemapFile,
   interop,
+  extend,
 
   // 危险区域
   exports,
   amd,
-  indent
-  strict
+  indent,
+  strict,
+  freeze,
+  legacy,
+  namespaceToStringTag
 };
 ```
 
@@ -124,9 +135,21 @@ const watchOptions = {
   watch: {
     chokidar,
     include,
-    exclude
+    exclude,
+    clearScreen
   }
 };
 ```
 
 查看以上文档知道更多 `inputOptions` 和 `outputOptions` 的细节, 或查询 [big list of options](#big-list-of-options) 关 `chokidar`, `include` 和 `exclude` 的资料。
+
+
+### TypeScript Declarations
+
+If you'd like to use the API in a TypeScript environment you can do so, as now we ship TypeScript declarations.
+
+You need to install some dependencies in case you have [skipLibCheck](https://www.typescriptlang.org/docs/handbook/compiler-options.html) turned off.
+
+```bash
+npm install @types/acorn @types/chokidar source-map magic-string --only=dev
+```

@@ -2,7 +2,7 @@
 title: 教程
 ---
 
-### 创建第一个bundle
+### 创建第一个 bundle
 
 *开始前, 需要安装 [Node.js](https://nodejs.org)， 这样才可以使用 [npm](https://npmjs.com) ；还需要了解如何使用 [command line](https://www.codecademy.com/learn/learn-the-command-line)。*
 
@@ -50,7 +50,7 @@ export default 'hello world!';
 rollup src/main.js -f cjs
 ```
 
-`-f` 选项（`--output.format` 的缩写）指定了所创建 bundle 的类型——这里是 CommonJS（在 Node.js 中运行）。由于没有指定输出文件，所以会直接打印在 `stdout` 中：
+`-f` 选项（`--format` 的缩写）指定了所创建 bundle 的类型——这里是 CommonJS（在 Node.js 中运行）。由于没有指定输出文件，所以会直接打印在 `stdout` 中：
 
 ```js
 'use strict';
@@ -101,7 +101,7 @@ export default {
   }
 };
 ```
- 
+
 我们用 `--config` 或 `-c` 来使用配置文件：
 
 ```bash
@@ -112,7 +112,7 @@ rollup -c
 同样的命令行选项将会覆盖配置文件中的选项：
 
 ```bash
-rollup -c -o bundle-2.js # `-o` is short for `--output.file`
+rollup -c -o bundle-2.js # `-o` 等价于 `--file`（原名 "output"）
 ```
 
 （注意 Rollup 本身会处理配置文件，所以可以使用 `export default` 语法——代码不会经过 Babel 等类似工具编译，所以只能使用所用 Node.js 版本支持的 ES2015 语法。）
@@ -131,6 +131,18 @@ rollup --config rollup.config.prod.js
 为此，我们可以用 *插件(plugins)* 在打包的关键过程中更改 Rollup 的行为。[the Rollup wiki](https://github.com/rollup/rollup/wiki/Plugins) 维护了可用的插件列表。
 
 此教程中，我们将使用 [rollup-plugin-json](https://github.com/rollup/rollup-plugin-json)，令 Rollup 从 JSON 文件中读取数据。
+
+Create a file in the project root called `package.json`, and add the following content:
+
+```json
+{
+  "name": "rollup-tutorial",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rollup -c"
+  }
+}
+```
 
 将 rollup-plugin-json 安装为开发依赖：
 
@@ -181,4 +193,68 @@ var main = function () {
 module.exports = main;
 ```
 
-（注意只有我们实际需要的数据——name 和 devDependencies 和 package.json 中的其它数据被忽略了。这是 tree-shaking 起了作用。）
+（注意，只有我们实际需要的数据 – `name` 和 `devDependencies` 和 `package.json` 中的其它数据被忽略了。这是 tree-shaking 起了作用。）
+
+### Experimental Code Splitting
+
+To use the new experimental code splitting feature, we add a second *entry point* called `src/main2.js` that itself dynamically loads main.js:
+
+```js
+// src/main2.js
+export default function () {
+  return import('./main.js').then(({ default: main }) => {
+    main();
+  });
+}
+```
+
+We can then pass both entry points to the rollup build, and instead of an output file we set a folder to output to with the `--dir` option (also passing the experimental flags):
+
+```bash
+rollup src/main.js src/main2.js -f cjs --dir dist --experimentalCodeSplitting --experimentalDynamicImport
+```
+
+Either built entry point can then be run in NodeJS without duplicating any code between the modules:
+
+```bash
+node -e "require('./dist/main2.js')()"
+```
+
+You can build the same code for the browser, for native ES modules, an AMD loader or SystemJS.
+
+For example, with `-f es` for native modules:
+
+```bash
+rollup src/main.js src/main2.js -f es --dir dist --experimentalCodeSplitting --experimentalDynamicImport
+```
+
+```html
+<!doctype html>
+<script type="module">
+  import main2 from './dist/main2.js';
+  main2();
+</script>
+```
+
+Or alternatively, for SystemJS with `-f system`:
+
+```bash
+rollup src/main.js src/main2.js -f system --dir dist --experimentalCodeSplitting --experimentalDynamicImport
+```
+
+install SystemJS via
+
+```bash
+npm install --save-dev systemjs
+```
+
+and then load either or both entry points in an HTML page as needed:
+
+```html
+<!doctype html>
+<script src="node_modules/systemjs/dist/system-production.js"></script>
+<script>
+  System.import('./dist/main2.js')
+  .then(({ default: main }) => main());
+</script>
+```

@@ -164,10 +164,8 @@ export default {
 ```js
 {
   "presets": [
-    ["latest", {
-      "es2015": {
-        "modules": false
-      }
+    ["env", {
+      "modules": false
     }]
   ],
   "plugins": ["external-helpers"]
@@ -180,10 +178,10 @@ export default {
 
 第三，我们将`.babelrc`文件放在`src`中，而不是根目录下。 这允许我们对于不同的任务有不同的`.babelrc`配置，比如像测试，如果我们以后需要的话 - 通常为单独的任务单独配置会更好。
 
-现在，在我们运行 rollup 之前，我们需要安装`latest` preset 和`external-helpers`插件
+现在，在我们运行 rollup 之前，我们需要安装 [`env`](https://babeljs.io/docs/plugins/preset-env/) preset 和 `external-helpers` 插件：
 
 ```bash
-npm i -D babel-preset-latest babel-plugin-external-helpers
+npm i -D babel-preset-env babel-plugin-external-helpers
 ```
 
 运行 Rollup 现在将创建一个 bundle 包... 实际上我们并没有使用任何ES2015特性。 我们来改变一下。 编辑`src / main.js`：
@@ -216,6 +214,30 @@ module.exports = main;
 Rollup 返回 gulp 能明白的 promises，所以集成是很容易的。
 
 语法与配置文件非常相似，但属性分为两个不同的操作，对应于[JavaScript API](#JavaScript-API)：
+
+```js
+const gulp = require('gulp');
+const rollup = require('rollup');
+const rollupTypescript = require('rollup-plugin-typescript');
+
+gulp.task('build', () => {
+  return rollup.rollup({
+    input: './src/main.ts',
+    plugins: [
+      rollupTypescript()
+    ]
+  }).then(bundle => {
+    return bundle.write({
+      file: './dist/library.js',
+      format: 'umd',
+      name: 'library',
+      sourcemap: true
+    });
+  });
+});
+```
+
+Also you may use new async/await syntax
 
 ```js
 const gulp = require('gulp');
