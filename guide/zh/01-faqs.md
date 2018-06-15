@@ -16,7 +16,7 @@ Rollup 力图实现 ES 模块的规范，而不一定是 Node.js, npm, `require(
 
 #### Rollup 是用来构建库还是应用程序？(Is Rollup meant for building libraries or applications?)
 
-Rollup 已被许多主流的 JavaScript 库使用，也可用于构建绝大多数应用程序。但是 Rollup 还不支持一些特定的高级功能，尤其是用在构建一些应用程序的时候，特别是代码拆分和运行时态的动态导入 [dynamic imports at runtime](https://github.com/tc39/proposal-dynamic-import). 如果你的项目中更需要这些功能，那使用 [Webpack](https://webpack.js.org/)可能更符合你的需求。
+Rollup 已被许多主流的 JavaScript 库使用，也可用于构建绝大多数应用程序。然而，如果想在旧版浏览器中使用代码分割（code-splitting） 或者动态导入（dynamic imports），你需要额外的运行时库（runtime）去加载缺失的模块。我们建议使用 [SystemJS Production Build](https://github.com/systemjs/systemjs)，因为它能够很好地与 Rollup系统的输出格式(system format output)集成在一起，并且正确处理所有 ES 模块特性和重复导出的极端情况。或者，也可以使用 AMD 加载器。
 
 #### 谁制作了 Rollup 的 Logo。太可爱了!(Who made the Rollup logo? It's lovely.)
 

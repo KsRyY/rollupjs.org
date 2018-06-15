@@ -101,7 +101,7 @@ export default {
   }
 };
 ```
- 
+
 我们用 `--config` 或 `-c` 来使用配置文件：
 
 ```bash
@@ -131,6 +131,18 @@ rollup --config rollup.config.prod.js
 为此，我们可以用 *插件(plugins)* 在打包的关键过程中更改 Rollup 的行为。[the Rollup wiki](https://github.com/rollup/rollup/wiki/Plugins) 维护了可用的插件列表。
 
 此教程中，我们将使用 [rollup-plugin-json](https://github.com/rollup/rollup-plugin-json)，令 Rollup 从 JSON 文件中读取数据。
+
+在工程的根目录创建一个package.json 文件，内容如下：
+
+```bash
+{
+  "name": "rollup-tutorial",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rollup -c"
+  }
+}
+```
 
 将 rollup-plugin-json 安装为开发依赖：
 
@@ -182,3 +194,71 @@ module.exports = main;
 ```
 
 （注意只有我们实际需要的数据——name 和 devDependencies 和 package.json 中的其它数据被忽略了。这是 tree-shaking 起了作用。）
+
+### 实验中的代码分割（Experimental Code Splitting）
+
+为了使用实验中性代码分割特性，我们添加第二个入口文件`src/main2.js` ，它将动态加载main.js
+
+```js
+// src/main2.js
+export default function () {
+  return import('./main.js').then(({ default: main }) => {
+    main();
+  });
+}
+```
+
+我们可以使用`--dir` 选项将输出设置为一个文件夹而不是文件，把它和入口文件一起传给rollup来构建（也要传如实验标签）
+
+```bash
+rollup src/main.js src/main2.js -f cjs --dir dist --experimentalCodeSplitting
+```
+
+任何构建入口的方式都可以在NodeJS中运行而不会在模块中重复任何代码
+
+```bash
+node -e "require('./dist/main2.js')()"
+```
+
+You can build the same code for the browser, for native ES modules, an AMD loader or SystemJS.
+
+For example, with `-f es` for native modules:
+
+你可以为浏览器、原生ES模块，AMD 加载器或者SystemJS构建同样的代码。
+
+举个例子，可以 `-f es` 构建原生ES模块
+
+```bash
+rollup src/main.js src/main2.js -f es --dir dist --experimentalCodeSplitting
+```
+
+```html
+<!doctype html>
+<script type="module">
+  import main2 from './dist/main2.js';
+  main2();
+</script>
+```
+
+或者，为SystemJS使用 `-f system`:
+
+```bash
+rollup src/main.js src/main2.js -f system --dir dist --experimentalCodeSplitting
+```
+
+安装SystemJS通过
+
+```bash
+npm install --save-dev systemjs
+```
+
+现在按照需要可以为HTML页面加载任意一个或者全部入口文件：
+
+```html
+<!doctype html>
+<script src="node_modules/systemjs/dist/system-production.js"></script>
+<script>
+  System.import('./dist/main2.js')
+  .then(({ default: main }) => main());
+</script>
+```

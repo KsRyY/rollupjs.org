@@ -51,6 +51,20 @@ import './module.js';
 
 这对于polyfills是有用的，或者当导入的代码的主要目的是与原型有关的时候。
 
+#### 动态导入(Dynamic Import)
+
+使用 [dynamic import API](https://github.com/tc39/proposal-dynamic-import#import)导入模块。该API是实验功能，在使用 `experimentalDynamicImport` 标示的时候可以使用。
+
+```js
+import('./modules.js').then(({ default: DefaultExport, NamedExport })=> {
+  // do something with modules.
+})
+```
+
+This is useful for code-splitting applications and using modules on-the-fly.
+
+这可以用于代码切割的应用和模块的同步使用
+
 
 ### 导出(Exporting)
 
