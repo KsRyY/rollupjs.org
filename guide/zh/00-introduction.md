@@ -6,7 +6,7 @@ title: 介绍
 
 ### 概述(Overview)
 
-Rollup 是一个 JavaScript 模块打包器，可以将小块代码编译成大块复杂的代码，例如 library 或应用程序。Rollup 对代码模块使用新的标准化格式，这些标准都包含在 JavaScript 的 ES6 版本中，而不是以前的特殊解决方案，如 CommonJS 和 AMD。ES6 模块可以使你自由、无缝地使用你最喜爱的 library 中那些最有用独立函数，而你的项目不必携带其他未使用的代码。ES6 模块最终还是要由浏览器原生实现，但当前 Rollup 可以使你提前体验。
+Rollup 是一个 JavaScript 模块打包工具，可以将小块代码编译成大块复杂的代码，例如 library 或应用程序。Rollup 对代码模块使用新的标准化格式，这些标准都包含在 JavaScript 的 ES6 版本中，而不是以前的特殊解决方案，如 CommonJS 和 AMD。ES6 模块可以使你自由、无缝地使用你最喜爱的 library 中那些最有用独立函数，而你的项目不必携带其他未使用的代码。ES6 模块最终还是要由浏览器原生实现，但当前 Rollup 可以使你提前体验。
 
 ### 快速入门指南(Quick start)
 
@@ -20,26 +20,28 @@ Rollup 是一个 JavaScript 模块打包器，可以将小块代码编译成大�
 
 ```bash
 # compile to a <script> containing a self-executing function ('iife')
-$ rollup main.js --o bundle.js --f iife
+$ rollup main.js --file bundle.js --format iife
 ```
 
 对于 Node.js:
 
 ```bash
 # compile to a CommonJS module ('cjs')
-$ rollup main.js --o bundle.js --f cjs
+$ rollup main.js --file bundle.js --format cjs
 ```
 
 对于浏览器和 Node.js:
 
 ```bash
 # UMD format requires a bundle name
-$ rollup main.js --o bundle.js -f umd --name "myBundle"
+$ rollup main.js --file bundle.js -format umd --name "myBundle"
 ```
 
 ### 为什么(Why)
 
 如果你将项目拆分成小的单独文件中，这样开发软件通常会很简单，因为这通常会消除无法预知的相互影响(remove unexpected interaction)，以及显著降低了所要解决的问题的复杂度(complexity of the problem)，并且可以在项目最初时，就简洁地编写小的项目（[不一定是标准答案](https://medium.com/@Rich_Harris/small-modules-it-s-not-quite-that-simple-3ca532d65de4)）。不幸的是，JavaScript 以往并没有将此功能作为语言的核心功能。
+
+这种情况将会随着ES6的修订而改变，它包含关于导入、导出函数和数据的一系列语法使其可以在不同的脚本文件中共享。该规范现在已经修订完成，但是没有被浏览器和Node.js支持。Rollup 允许你使用新的模块系统编码，同时会将它编译成现在支持的格式，如Common JS、AMD模块、IIFE-style 脚本。这意味着你可以书写面向未来的代码，并且获得巨大的好处...
 
 ### Tree-shaking
 
@@ -49,7 +51,7 @@ $ rollup main.js --o bundle.js -f umd --name "myBundle"
 
 ```js
 // 使用 CommonJS 导入(import)完整的 utils 对象
-var utils = require( 'utils' );
+var utils = require( './utils' );
 var query = 'Rollup';
 // 使用 utils 对象的 ajax 方法
 utils.ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
@@ -59,7 +61,7 @@ utils.ajax( 'https://api.example.com?search=' + query ).then( handleResponse );
 
 ```js
 // 使用 ES6 import 语句导入(import) ajax 函数
-import { ajax } from 'utils';
+import { ajax } from './utils';
 var query = 'Rollup';
 // 调用 ajax 函数
 ajax( 'https://api.example.com?search=' + query ).then( handleResponse );

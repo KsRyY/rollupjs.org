@@ -2,11 +2,11 @@
 title: JavaScript API
 ---
 
-Rollup 提供 JavaScript 接口那样可以通过 Node.js 来使用。你可以很少使用，而且很可能使用命令行接口，除非你想扩展 Rollup 本身，或者用于一些难懂的任务，例如用代码把文件束生成出来。
+Rollup 提供 JavaScript 接口那样可以通过 Node.js 来使用。你可以很少使用，而且很可能使用命令行接口，除非你想扩展 Rollup 本身，或者用于一些难懂的任务，例如自己编码生成bundles文件。
 
 ### rollup.rollup
 
-The `rollup.rollup` 函数返回一个 Promise，它解析了一个 `bundle` 对象，此对象带有不同的属性及方法，如下：
+ `rollup.rollup` 函数返回一个 Promise，它携带了一个 `bundle` 对象，此对象带有不同的属性及方法，如下：
 
 ```javascript
 const rollup = require('rollup');
@@ -36,7 +36,7 @@ build();
 
 #### 输入参数(inputOptions)
 
-`inputOptions` 对象包含下列属性 (查看[big list of options](#big-list-of-options) 以获得这些参数更详细的资料):
+`inputOptions` 对象包含下列属性 (查看[选项清单](#big-list-of-options) 以获得这些参数更详细的资料):
 
 ```js
 const inputOptions = {
@@ -48,25 +48,34 @@ const inputOptions = {
   // 高级参数
   onwarn,
   cache,
+  perf,
 
   // 危险参数
   acorn,
+  acornInjectPlugins,
+  treeshake,
   context,
-  moduleContext,
-  legacy
+  moduleContext
+    
+  //实验属性
+  experimentalCodeSplitting,
+  manualChunks,
+  optimizeChunks,
+  chunkGroupingSize
 };
 ```
 
 
 #### 输出参数(outputOptions)
 
-`outputOptions` 对象包括下列属性 (查看 [big list of options](#big-list-of-options) 以获得这些参数更详细的资料):
+`outputOptions` 对象包括下列属性 (查看 [选项清单](#big-list-of-options) 以获得这些参数更详细的资料):
 
 ```js
 const outputOptions = {
   // 核心参数
   file,   // 若有bundle.write，必填
   format, // 必填
+  dir,
   name,
   globals,
 
@@ -79,12 +88,21 @@ const outputOptions = {
   sourcemap,
   sourcemapFile,
   interop,
+  extend,
 
   // 危险区域
   exports,
   amd,
-  indent
-  strict
+  indent,
+  strict,
+  freeze,
+  legacy,
+  namespaceToStringTag,
+  
+  // 实验属性
+  entryFileNames,
+  chunkFileNames,
+  assetsFileNames
 };
 ```
 
@@ -124,9 +142,20 @@ const watchOptions = {
   watch: {
     chokidar,
     include,
-    exclude
+    exclude,
+    clearScreen
   }
 };
 ```
 
-查看以上文档知道更多 `inputOptions` 和 `outputOptions` 的细节, 或查询 [big list of options](#big-list-of-options) 关 `chokidar`, `include` 和 `exclude` 的资料。
+查看以上文档知道更多 `inputOptions` 和 `outputOptions` 的细节, 或查询 [选项清单](#big-list-of-options) 关 `chokidar`, `include` 和 `exclude` 的资料。
+
+### （TypeScript声明）TypeScript Declarations
+
+我们已经支持TypeScript声明，如果你想在TypeScript环境中使用这些Api你可以这样做：
+
+如果你关闭了 [skipLibCheck](https://www.typescriptlang.org/docs/handbook/compiler-options.html)，你需要安装这些依赖
+
+```bash
+npm install @types/acorn @types/chokidar source-map magic-string --only=dev
+```
