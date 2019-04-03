@@ -119,7 +119,7 @@ export default {
 }
 ```
 
-如果你使用 [babel-plugin-lodash]（https://github.com/lodash/babel-plugin-lodash）来最优选择lodash模块，在这种情况下，Babel将转换你的导入语句，如下所示
+如果你使用 [babel-plugin-lodash]（https://github.com/lodash/babel-plugin-lodash)来最优选择lodash模块，在这种情况下，Babel将转换你的导入语句，如下所示
 
 ```js
 import _merge from 'lodash/merge';
@@ -129,9 +129,9 @@ import _merge from 'lodash/merge';
 
 ### Babel
 
-许多开发人员在他们的项目中使用[Babel]（https://babeljs.io/），以便他们可以使用未被浏览器和Node.js支持的将来版本的 JavaScript 特性。
+许多开发人员在他们的项目中使用[Babel]（https://babeljs.io/)，以便他们可以使用未被浏览器和Node.js支持的将来版本的 JavaScript 特性。
 
-使用 Babel 和 Rollup 的最简单方法是使用 [rollup-plugin-babel]（https://github.com/rollup/rollup-plugin-babel）。 安装它：
+使用 Babel 和 Rollup 的最简单方法是使用 [rollup-plugin-babel]（https://github.com/rollup/rollup-plugin-babel)。 安装它：
 
 ```bash
 npm i -D rollup-plugin-babel
